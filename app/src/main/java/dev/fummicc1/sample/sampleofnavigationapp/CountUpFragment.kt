@@ -7,13 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.UiThread
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
 import dev.fummicc1.sample.sampleofnavigationapp.data.CountRecord
 import dev.fummicc1.sample.sampleofnavigationapp.databinding.FragmentCountUpBinding
-import java.time.Duration
 import java.util.*
 
 class CountUpFragment : Fragment() {
@@ -50,6 +47,7 @@ class CountUpFragment : Fragment() {
                         Toast.makeText(context, getString(R.string.time_up), Toast.LENGTH_SHORT).show()
                         timer.cancel()
                         // need to specify function to return.
+                        findNavController().navigate(CountUpFragmentDirections.actionCountUpFragmentToResultFragment(countRecord))
                         return@post
                     }
                     countRecord.time -= 1

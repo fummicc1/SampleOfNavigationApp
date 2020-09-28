@@ -9,7 +9,12 @@
         android:id="@+id/countUpFragment"
         android:name="dev.fummicc1.sample.sampleofnavigationapp.CountUpFragment"
         android:label="fragment_count_up"
-        tools:layout="@layout/fragment_count_up" />
+        tools:layout="@layout/fragment_count_up" >
+        <action
+            android:id="@+id/action_countUpFragment_to_resultFragment"
+            app:destination="@id/resultFragment"
+            app:popUpTo="@id/mainFragment" />
+    </fragment>
     <fragment
         android:id="@+id/mainFragment"
         android:name="dev.fummicc1.sample.sampleofnavigationapp.MainFragment"
@@ -18,5 +23,13 @@
         <action
             android:id="@+id/action_mainFragment_to_countUpFragment"
             app:destination="@id/countUpFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultFragment"
+        android:name="dev.fummicc1.sample.sampleofnavigationapp.ResultFragment"
+        android:label="ResultFragment" >
+        <argument
+            android:name="countRecord"
+            app:argType="dev.fummicc1.sample.sampleofnavigationapp.data.CountRecord" />
     </fragment>
 </navigation>

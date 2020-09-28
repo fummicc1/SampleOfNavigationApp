@@ -23,7 +23,7 @@ class MainFragment : Fragment() {
         val binding = DataBindingUtil.inflate<FragmentMainBinding>(inflater, R.layout.fragment_main, container, false)
         binding.apply {
             playButton.setOnClickListener {
-                it.findNavController().navigate(R.id.action_mainFragment_to_countUpFragment)
+                it.findNavController().navigate(MainFragmentDirections.actionMainFragmentToCountUpFragment())
             }
         }
         return binding.root

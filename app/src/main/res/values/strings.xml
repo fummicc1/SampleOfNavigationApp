@@ -8,4 +8,6 @@
     <string name="one_time_button">×1</string>
     <string name="five_times_button">×5</string>
     <string name="time_up">Time up!</string>
+    <string name="back_to_home">ホームへ</string>
+    <string name="share_button_text">シェア</string>
 </resources>
