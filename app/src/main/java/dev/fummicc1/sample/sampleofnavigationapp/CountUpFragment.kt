@@ -7,17 +7,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.annotation.UiThread
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import dev.fummicc1.sample.sampleofnavigationapp.data.CountRecord
 import dev.fummicc1.sample.sampleofnavigationapp.databinding.FragmentCountUpBinding
+import kotlinx.android.synthetic.main.fragment_count_up.*
+import kotlinx.coroutines.*
 import java.util.*
 
 class CountUpFragment : Fragment() {
 
     private var countRecord: CountRecord = CountRecord()
     private val timer: Timer = Timer()
-    private lateinit var handler: Handler
+    private val mainScope: CoroutineScope = MainScope()
     private lateinit var binding: FragmentCountUpBinding
 
     override fun onCreateView(
@@ -31,29 +35,45 @@ class CountUpFragment : Fragment() {
             container,
             false
         )
-        binding.countRecord = countRecord
-        // TODO: fix deprecated Handler constructor.
-        // TODO: use coroutine instead of Handler.
-        handler = Handler()
-        startTimer(handler)
+        binding.apply {
+            countRecord = this@CountUpFragment.countRecord
+            normalCountUpButton.setOnClickListener {
+                this@CountUpFragment.countRecord.amount += 1
+                invalidateAll()
+            }
+            fiveTimesCountUpButton.setOnClickListener {
+                this@CountUpFragment.countRecord.amount += 5
+                invalidateAll()
+            }
+            tenTimesCountUpButton.setOnClickListener {
+                this@CountUpFragment.countRecord.amount += 10
+                invalidateAll()
+            }
+        }
+        startTimer()
         return binding.root
     }
 
-    private fun startTimer(handler: Handler) {
+    private fun startTimer() {
         timer.schedule(object : TimerTask() {
             override fun run() {
-                handler.post {
-                    if (countRecord.time == 0) {
-                        Toast.makeText(context, getString(R.string.time_up), Toast.LENGTH_SHORT).show()
-                        timer.cancel()
-                        // need to specify function to return.
-                        findNavController().navigate(CountUpFragmentDirections.actionCountUpFragmentToResultFragment(countRecord))
-                        return@post
-                    }
-                    countRecord.time -= 1
-                    binding.invalidateAll()
-                }
+                updateTime()
             }
         }, 0, 1000)
+    }
+
+    @UiThread
+    fun updateTime() {
+        if (countRecord.time == 0) {
+            mainScope.launch {
+                Toast.makeText(context, getString(R.string.time_up), Toast.LENGTH_SHORT).show()
+                timer.cancel()
+                // need to specify function to return.
+                findNavController().navigate(CountUpFragmentDirections.actionCountUpFragmentToResultFragment(countRecord))
+                return@launch
+            }
+        }
+        countRecord.time -= 1
+        binding.invalidateAll()
     }
 }
